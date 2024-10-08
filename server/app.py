@@ -67,8 +67,10 @@ def get_or_update_power(id):
             for key, value in request.json.items():
                 setattr(power, key, value)
             db.session.commit()
-        except Exception as e:
+        except ValueError as e:
             return {'error': str(e)}, 400
+        except:
+            return {'error': ['Validation errors']}
 
         return power.to_dict(rules=('-hero_power_list', ))
 
@@ -86,8 +88,10 @@ def hero_powers():
         db.session.commit()
 
         return new_hero_power.to_dict(), 201
-    except Exception as e:
+    except ValueError as e:
         return {'errors': str(e)}
+    except:
+        return {'error': ['Validation errors']}
 
 
 if __name__ == '__main__':
