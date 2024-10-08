@@ -14,6 +14,8 @@ class HeroPower(db.Model, SerializerMixin):
     hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'))
     power_id = db.Column(db.Integer, db.ForeignKey('powers.id'))
 
+    serialize_rules = '-hero', '-power'
+
 
 class Hero(db.Model, SerializerMixin):
     __tablename__ = 'heroes'
@@ -23,7 +25,9 @@ class Hero(db.Model, SerializerMixin):
     super_name = db.Column(db.String, unique=True)
 
     hero_power_list = db.relationship('HeroPower', backref='hero')
-    hero_list = association_proxy('hero_power_list', 'power')
+    powers = association_proxy('hero_power_list', 'power')
+
+    serialize_rules = '-hero_power_list.hero',
 
 
 class Power(db.Model, SerializerMixin):
@@ -34,4 +38,6 @@ class Power(db.Model, SerializerMixin):
     description = db.Column(db.String)
 
     hero_power_list = db.relationship('HeroPower', backref='power')
-    hero_list = association_proxy('hero_power_list', 'hero')
+    heroes = association_proxy('hero_power_list', 'hero')
+
+    serialize_rules = '-hero_power_list.power',
