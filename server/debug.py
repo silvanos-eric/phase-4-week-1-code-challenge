@@ -1,5 +1,5 @@
 import ipdb
-from models import Hero, Power, HeroPower
+from models import Hero, Power, HeroPower, db
 from app import app
 
 if __name__ == '__main__':
