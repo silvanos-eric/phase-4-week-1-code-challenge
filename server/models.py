@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 
 db = SQLAlchemy()
@@ -15,6 +16,13 @@ class HeroPower(db.Model, SerializerMixin):
     power_id = db.Column(db.Integer, db.ForeignKey('powers.id'))
 
     serialize_rules = '-hero', '-power'
+
+    @validates('strength')
+    def validate_strength(self, key, value):
+        valid_values = ['Strong', 'Weak', 'Average']
+        if not value in valid_values:
+            raise ValueError(f'Hero {key} must be one of {valid_values}')
+        return value
 
 
 class Hero(db.Model, SerializerMixin):
@@ -41,3 +49,9 @@ class Power(db.Model, SerializerMixin):
     heroes = association_proxy('hero_power_list', 'hero')
 
     serialize_rules = '-hero_power_list.power',
+
+    @validates('description')
+    def validate_description(self, key, value):
+        if not (value and len(value) > 20):
+            raise ValueError(f'Hero {key} must be at least 20 characters long')
+        return value
