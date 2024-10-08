@@ -32,10 +32,10 @@ class Hero(db.Model, SerializerMixin):
     name = db.Column(db.String)
     super_name = db.Column(db.String, unique=True)
 
-    hero_power_list = db.relationship('HeroPower', backref='hero')
-    powers = association_proxy('hero_power_list', 'power')
+    hero_powers = db.relationship('HeroPower', backref='hero')
+    powers = association_proxy('hero_powers', 'power')
 
-    serialize_rules = '-hero_power_list.hero',
+    serialize_rules = '-hero_powers.hero',
 
 
 class Power(db.Model, SerializerMixin):

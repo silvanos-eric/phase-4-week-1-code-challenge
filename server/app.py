@@ -23,5 +23,13 @@ def get_heroes():
     return [hero.to_dict(rules=('-hero_power_list', )) for hero in heroes]
 
 
+@app.route('/heroes/<int:hero_id>')
+def hero_by_id(hero_id):
+    """Return a hero by id."""
+    hero = Hero.query.get(hero_id)
+
+    return hero.to_dict()
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
