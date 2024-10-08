@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_migrate import Migrate
 from models import db, Hero, HeroPower, Power
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -51,6 +52,9 @@ def get_or_update_power(id):
     """Get a power by id or update a power by id."""
 
     power = Power.query.get(id)
+
+    if not power:
+        return {'error': 'Power not found'}
 
     if request.method == 'GET':
         if not power:

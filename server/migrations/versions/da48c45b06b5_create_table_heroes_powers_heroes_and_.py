@@ -1,8 +1,8 @@
 """create table heroes_powers, heroes and powers
 
-Revision ID: bceac3c9e46d
+Revision ID: da48c45b06b5
 Revises: 
-Create Date: 2024-10-08 09:41:18.743853
+Create Date: 2024-10-08 20:21:49.049137
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bceac3c9e46d'
+revision = 'da48c45b06b5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,8 +35,8 @@ def upgrade():
     op.create_table('heroes_powers',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('strength', sa.String(), nullable=True),
-    sa.Column('hero_id', sa.Integer(), nullable=True),
-    sa.Column('power_id', sa.Integer(), nullable=True),
+    sa.Column('hero_id', sa.Integer(), nullable=False),
+    sa.Column('power_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['hero_id'], ['heroes.id'], ),
     sa.ForeignKeyConstraint(['power_id'], ['powers.id'], ),
     sa.PrimaryKeyConstraint('id')

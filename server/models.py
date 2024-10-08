@@ -28,8 +28,10 @@ class HeroPower(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     strength = db.Column(db.String)
 
-    hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'))
-    power_id = db.Column(db.Integer, db.ForeignKey('powers.id'))
+    hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'), nullable=False)
+    power_id = db.Column(db.Integer,
+                         db.ForeignKey('powers.id'),
+                         nullable=False)
 
     serialize_rules = '-hero.hero_powers', '-power.hero_power_list'
 
