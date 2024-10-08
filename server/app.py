@@ -16,5 +16,12 @@ def get_index():
     return 'Superheroes API'
 
 
+@app.route('/heroes', methods=['GET'])
+def get_heroes():
+    """Get a list of all the heroes."""
+    heroes = Hero.query.all()
+    return [hero.to_dict(rules=('-hero_power_list', )) for hero in heroes]
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
