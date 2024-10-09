@@ -1,7 +1,6 @@
 from flask import Flask, request
 from flask_migrate import Migrate
 from models import db, Hero, HeroPower, Power
-from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -24,7 +23,7 @@ def get_heroes():
 
     heroes = Hero.query.all()
 
-    return [hero.to_dict(rules=('-hero_power_list', )) for hero in heroes]
+    return [hero.to_dict(rules=('-hero_powers', )) for hero in heroes]
 
 
 @app.route('/heroes/<int:id>')
@@ -44,7 +43,7 @@ def powers():
     """Get a list of all the powers."""
 
     powers = Power.query.all()
-    return [power.to_dict(rules=('-hero_power_list', )) for power in powers]
+    return [power.to_dict(rules=('-hero_powers', )) for power in powers]
 
 
 @app.route('/powers/<int:id>', methods=['GET', 'PATCH'])
@@ -60,7 +59,7 @@ def get_or_update_power(id):
         if not power:
             return {'error': 'Power not found'}, 404
 
-        return power.to_dict(rules=('-hero_power_list', ))
+        return power.to_dict(rules=('-hero_powers', ))
 
     elif request.method == 'PATCH':
         try:
@@ -72,7 +71,7 @@ def get_or_update_power(id):
         except:
             return {'error': ['Validation errors']}
 
-        return power.to_dict(rules=('-hero_power_list', ))
+        return power.to_dict(rules=('-hero_powers', ))
 
 
 @app.route('/hero_powers', methods=['POST'])
