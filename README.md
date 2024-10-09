@@ -8,21 +8,26 @@ Here is the structure of the project:
 
 ```bash
 .
+├── .gitignore                     # Lists files and directories to be ignored by Git
 ├── LICENSE                        # Project license (MIT)
 ├── Pipfile                        # Package dependencies
-├── .gitignore                     # Files ignored from version control
+├── Pipfile.lock                   # Locked package versions
+├── README.md                      # Project documentation (this file)
 └── server
     ├── app.py                     # Main Flask application
     ├── debug.py                   # Debugging utilities using ipdb
-    ├── instance/                  # Contains SQLite database (ignored)
+    ├── instance/                  # Contains SQLite database (ignored in Git)
+    │   └── app.db                 # SQLite database file (excluded)
     ├── migrations/                # Alembic migrations
     │   ├── alembic.ini            # Alembic configuration
     │   ├── env.py                 # Migration environment
     │   ├── README                 # Migration documentation
     │   ├── script.py.mako         # Template for Alembic migrations
     │   └── versions/              # Versioned migration scripts
+    │       └── da48c45b06b5_create_table_heroes_powers_heroes_and_.py
     ├── models.py                  # SQLAlchemy models for heroes and powers
     └── seed.py                    # Script for seeding initial data
+
 ```
 
 ## Features ✨
