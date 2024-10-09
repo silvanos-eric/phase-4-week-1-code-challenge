@@ -1,10 +1,11 @@
+from sqlite3 import Connection
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
-from sqlalchemy_serializer import SerializerMixin
-from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlite3 import Connection
+from sqlalchemy.orm import validates
+from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
 
@@ -59,8 +60,6 @@ class Hero(db.Model, SerializerMixin):
                                   cascade='all, delete-orphan')
     powers = association_proxy('hero_powers', 'power')
 
-    serialize_rules = '-hero_powers.hero',
-
 
 class Power(db.Model, SerializerMixin):
     __tablename__ = 'powers'
@@ -73,8 +72,6 @@ class Power(db.Model, SerializerMixin):
                                   backref='power',
                                   cascade='all, delete-orphan')
     heroes = association_proxy('hero_power_list', 'hero')
-
-    serialize_rules = '-hero_power_list.power',
 
     @validates('description')
     def validate_description(self, key, value):
