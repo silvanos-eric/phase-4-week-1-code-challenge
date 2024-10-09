@@ -55,9 +55,9 @@ Here is the structure of the project:
    ```bash
    cd phase-4-week-1-code-challenge
    ```
-3. Install the dependencies:
+3. Install the dependencies, including **development dependencies**:
    ```bash
-   pipenv install
+   pipenv install --dev
    ```
 
 ### Running the Application 🎮
