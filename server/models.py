@@ -33,7 +33,7 @@ class HeroPower(db.Model, SerializerMixin):
                          db.ForeignKey('powers.id'),
                          nullable=False)
 
-    serialize_rules = '-hero.hero_powers', '-power.hero_power_list'
+    serialize_rules = '-hero.hero_powers', '-power.hero_powers'
 
     @validates('strength')
     def validate_strength(self, key, value):
@@ -69,9 +69,9 @@ class Power(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False, unique=True)
     description = db.Column(db.String)
 
-    hero_power_list = db.relationship('HeroPower',
-                                      backref='power',
-                                      cascade='all, delete-orphan')
+    hero_powers = db.relationship('HeroPower',
+                                  backref='power',
+                                  cascade='all, delete-orphan')
     heroes = association_proxy('hero_power_list', 'hero')
 
     serialize_rules = '-hero_power_list.power',
