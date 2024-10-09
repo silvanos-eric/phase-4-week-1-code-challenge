@@ -66,8 +66,14 @@ Here is the structure of the project:
    pipenv shell
    ```
 2. Run the Flask app:
+   - **Option 1: Using Python directly**
    ```bash
    python server/app.py
+   ```
+   - **Option 2: Using the Flask CLI**
+   ```bash
+   cd server
+   flask run --port 5555
    ```
    The application will start on `localhost:5555` and is now ready to serve superhero data!
 
