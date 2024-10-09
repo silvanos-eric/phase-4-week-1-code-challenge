@@ -11,10 +11,33 @@ Migrate(app, db)
 
 
 @app.route('/')
-def get_index():
+def index():
     """Return a string indicating that the API is live."""
 
-    return 'Superheroes API'
+    return '''
+        <h1>Superheroes API</h1>
+    
+        <h2><code>GET /</code></h2>
+        <p>Returns a welcome message indicating the API is live <em>(This page)</em>.</p>
+    
+        <h2><code>GET /heroes</code></h2>
+        <p>Returns a list of all heroes, excluding their related powers.</p>
+    
+        <h2><code>GET /heroes/&lt;id&gt;</code></h2>
+        <p>Fetches details for a specific hero by their ID. Returns 404 Not Found if the hero is not found.</p>
+    
+        <h2><code>GET /powers</code></h2>
+        <p>Returns a list of all available powers.</p>
+    
+        <h2><code>GET /powers/&lt;id&gt;</code></h2>
+        <p>Returns details of a specific power by ID. Returns 404 Not Found if the power is not found.</p>
+    
+        <h2><code>PATCH /powers/&lt;id&gt;</code></h2>
+        <p>Allows updates to a power's details using a JSON payload. Returns 404 Not Found if the power is not found.</p>
+    
+        <h2><code>POST /hero_powers</code></h2>
+        <p>Creates a new hero-power relationship, with custom strength, using a JSON payload. Returns 400 Bad Request if the JSON payload is invalid.</p>
+    '''
 
 
 @app.route('/heroes', methods=['GET'])
@@ -69,7 +92,7 @@ def get_or_update_power(id):
         except ValueError as e:
             return {'error': str(e)}, 400
         except:
-            return {'error': ['Validation errors']}
+            return {'error': ['Validation errors']}, 400
 
         return power.to_dict(rules=('-hero_powers', ))
 
@@ -88,9 +111,9 @@ def hero_powers():
 
         return new_hero_power.to_dict(), 201
     except ValueError as e:
-        return {'errors': str(e)}
+        return {'errors': str(e)}, 400
     except:
-        return {'error': ['Validation errors']}
+        return {'error': ['Validation errors']}, 400
 
 
 if __name__ == '__main__':
