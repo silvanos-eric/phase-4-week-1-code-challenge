@@ -77,7 +77,7 @@ def get_or_update_power(id):
     power = Power.query.get(id)
 
     if not power:
-        return {'error': 'Power not found'}, 404
+        return {'errors': ['Power not found']}, 404
 
     if request.method == 'GET':
         return power.to_dict(rules=('-hero_powers', ))
@@ -88,10 +88,9 @@ def get_or_update_power(id):
                 setattr(power, key, value)
             db.session.commit()
         except ValueError as e:
-            if isinstance(e, ValueError):
-                return {'error': str(e)}, 400
-            else:
-                return {'error': 'An unexpected error occurred.'}
+            return {'errors': [str(e)]}, 400
+        except:
+            return {'errors': ['An unexpected error occurred.']}, 500
 
         return power.to_dict(rules=('-hero_powers', ))
 
@@ -127,8 +126,9 @@ def create_hero_power():
             errors.append(f"Missing required field: {e}")
         elif isinstance(e, IntegrityError) and 'UNIQUE' in str(e):
             errors.append("Duplicate hero-power.")
-
         return {"errors": errors}, 400
+    except:
+        return {'errors': ['An unexpected error occurred.']}, 500
 
 
 if __name__ == '__main__':
