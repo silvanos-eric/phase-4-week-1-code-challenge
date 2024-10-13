@@ -5,6 +5,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
+from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
@@ -33,6 +34,10 @@ class HeroPower(db.Model, SerializerMixin):
     power_id = db.Column(db.Integer,
                          db.ForeignKey('powers.id'),
                          nullable=False)
+
+    __table_args__ = UniqueConstraint('hero_id',
+                                      'power_id',
+                                      name='uq_hero_id_power_id'),
 
     serialize_rules = '-hero.hero_powers', '-power.hero_powers'
 

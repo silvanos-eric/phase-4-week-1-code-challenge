@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_migrate import Migrate
-from models import db, Hero, HeroPower, Power
+from models import Hero, HeroPower, Power, db
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -76,12 +77,9 @@ def get_or_update_power(id):
     power = Power.query.get(id)
 
     if not power:
-        return {'error': 'Power not found'}
+        return {'error': 'Power not found'}, 404
 
     if request.method == 'GET':
-        if not power:
-            return {'error': 'Power not found'}, 404
-
         return power.to_dict(rules=('-hero_powers', ))
 
     elif request.method == 'PATCH':
@@ -90,30 +88,47 @@ def get_or_update_power(id):
                 setattr(power, key, value)
             db.session.commit()
         except ValueError as e:
-            return {'error': str(e)}, 400
-        except:
-            return {'error': ['Validation errors']}, 400
+            if isinstance(e, ValueError):
+                return {'error': str(e)}, 400
+            else:
+                return {'error': 'An unexpected error occurred.'}
 
         return power.to_dict(rules=('-hero_powers', ))
 
 
 @app.route('/hero_powers', methods=['POST'])
-def hero_powers():
-    """Create a new hero power."""
+def create_hero_power():
+    """Create a new hero-power relationship."""
 
-    data = request.json
     try:
-        new_hero_power = HeroPower(strength=data.get('strength'),
-                                   power_id=data.get('power_id'),
-                                   hero_id=data.get('hero_id'))
+        data = request.json
+
+        # Query the database to check if if hero_id and power_id exist
+        hero = db.session.get(Hero, data['hero_id'])
+        power = db.session.get(Power, data['power_id'])
+
+        if hero is None:
+            raise ValueError('Invalid hero_id provided.')
+        if power is None:
+            raise ValueError('Invalid power_id provided.')
+
+        new_hero_power = HeroPower(strength=data['strength'],
+                                   power_id=data['power_id'],
+                                   hero_id=data['hero_id'])
         db.session.add(new_hero_power)
         db.session.commit()
 
         return new_hero_power.to_dict(), 201
-    except ValueError as e:
-        return {'errors': str(e)}, 400
-    except:
-        return {'error': ['Validation errors']}, 400
+    except (ValueError, KeyError, IntegrityError) as e:
+        errors = []
+        if isinstance(e, ValueError):
+            errors.append(str(e))
+        elif isinstance(e, KeyError):
+            errors.append(f"Missing required field: {e}")
+        elif isinstance(e, IntegrityError) and 'UNIQUE' in str(e):
+            errors.append("Duplicate hero-power.")
+
+        return {"errors": errors}, 400
 
 
 if __name__ == '__main__':
