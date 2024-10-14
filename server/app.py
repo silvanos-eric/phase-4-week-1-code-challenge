@@ -57,7 +57,7 @@ def hero_by_id(id):
     hero = Hero.query.get(id)
 
     if not hero:
-        return {'error': 'Hero not found'}, 404
+        return {'errors': ['Hero not found']}, 404
 
     return hero.to_dict()
 
